@@ -5,8 +5,8 @@ A Claude Code skill for Go code complexity analysis and refactoring guidance.
 ## Installation
 
 ```bash
-# From GitHub
-npx @anthropic-ai/claude-code-skills add github:rysinal/go-complexity-review
+# Install via skills CLI
+npx skills add rysinal/go-complexity-review
 
 # Or clone to local skills directory
 git clone https://github.com/rysinal/go-complexity-review.git ~/.claude/skills/go-complexity-review
