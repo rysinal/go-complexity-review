@@ -1,20 +1,98 @@
 ---
 name: go-complexity-review
-description: |
-  Go code complexity review expert, focusing on Cyclomatic Complexity and Cognitive Complexity analysis and refactoring.
-  Trigger scenarios:
-  (1) Review Go code complexity issues, e.g., "check the complexity of this function"
-  (2) Analyze cyclomatic or cognitive complexity, e.g., "what's the cyclomatic complexity of this function"
-  (3) Refactor high-complexity code, e.g., "this function is too complex, help me refactor"
-  (4) Evaluate code maintainability during code review
-  (5) User mentions "complexity", "cyclomatic complexity", "cognitive complexity", "CC"
-  (6) User requests to reduce nesting levels or simplify conditional logic
-  (7) User asks how to make code more readable or maintainable
+tier: solo
+description: 'Go code complexity review expert using gocyclo/gocognit. Triggers: "complexity", "cyclomatic complexity", "cognitive complexity", "CC", "refactor complex", "reduce nesting", "code maintainability".'
+dependencies: []
 ---
 
 # Go Code Complexity Review
 
-## Core Metric Thresholds
+**YOU MUST EXECUTE THIS WORKFLOW. Do not just describe it.**
+
+Analyze Go code complexity to identify refactoring targets using Cyclomatic and Cognitive Complexity metrics.
+
+## Execution Steps
+
+Given `/go-complexity-review [path]`:
+
+### Step 1: Determine Target
+
+**If path provided:** Use it directly.
+
+**If no path:** Use current directory or recent changes:
+```bash
+git diff --name-only HEAD~5 2>/dev/null | grep -E '\.go$' | head -10
+```
+
+### Step 2: Install Tools (if needed)
+
+```bash
+# Check and install gocyclo
+which gocyclo || go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+
+# Check and install gocognit
+which gocognit || go install github.com/uudashr/gocognit/cmd/gocognit@latest
+```
+
+### Step 3: Run Complexity Analysis
+
+```bash
+# Cyclomatic Complexity - show functions with CC > 10
+gocyclo -over 10 -avg <path>
+
+# Cognitive Complexity - show functions with score > 15
+gocognit -over 15 <path>
+```
+
+### Step 4: Interpret Results
+
+**Cyclomatic Complexity Grades:**
+
+| Grade | CC Score | Meaning |
+|-------|----------|---------|
+| A | 1-5 | Low risk, simple |
+| B | 6-10 | Moderate, manageable |
+| C | 11-20 | High risk, complex |
+| D | 21-30 | Very high risk |
+| F | 31+ | Untestable, refactor now |
+
+### Step 5: Identify Refactor Targets
+
+List functions that need attention:
+- CC > 10: Should refactor
+- CC > 20: Must refactor
+- Cognitive > 15: Hard to understand
+- Nesting > 3 levels: Flatten with early returns
+
+### Step 6: Apply Refactoring
+
+Use techniques from the reference guide:
+- **Early Return/Guard Clause** - Reduce nesting
+- **Extract Function** - Split long functions (>50 lines)
+- **Table-Driven** - Replace switch/if-else chains
+- **Decompose Conditional** - Simplify complex boolean logic
+
+### Step 7: Verify Results
+
+```bash
+# Re-run analysis to confirm improvement
+gocyclo -over 10 <path>
+gocognit -over 15 <path>
+
+# Run tests to ensure no regressions
+go test ./...
+```
+
+## Key Rules
+
+- **Use both tools** - gocyclo for CC, gocognit for cognitive complexity
+- **Focus on high scores** - prioritize CC > 10, cognitive > 15
+- **Provide specific fixes** - not just "refactor this"
+- **Verify after refactoring** - re-run tools and tests
+
+---
+
+## Reference: Core Metric Thresholds
 
 | Metric | Threshold | Description |
 |--------|-----------|-------------|
