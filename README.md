@@ -1,16 +1,15 @@
 # go-complexity-review
 
-A Claude Code skill for Go code complexity analysis and refactoring guidance.
+An AI agent skill for Go code complexity analysis and refactoring guidance. Works with Claude Code, Cursor, GitHub Copilot, OpenCode, Codex, and other AI coding assistants.
 
 ## Installation
 
 ```bash
-# Install via skills CLI
+# Install via skills CLI (works with any supported AI coding agent)
 npx skills add rysinal/go-complexity-review
-
-# Or clone to local skills directory
-git clone https://github.com/rysinal/go-complexity-review.git ~/.claude/skills/go-complexity-review
 ```
+
+The CLI automatically detects your installed AI coding agents and places the skill in the appropriate directory.
 
 ## Features
 
